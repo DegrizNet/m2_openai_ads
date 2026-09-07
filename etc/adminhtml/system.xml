@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="degriz" translate="label" sortOrder="310">
+            <label>Degriz</label>
+        </tab>
+        <section id="degriz_openaiads" translate="label" type="text" sortOrder="10"
+                 showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>OpenAI Ads (ChatGPT) Pixel</label>
+            <tab>degriz</tab>
+            <resource>Degriz_OpenAiAds::config</resource>
+
+            <group id="support" translate="label" type="text" sortOrder="5"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Support</label>
+                <field id="notice" translate="label" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Degriz\OpenAiAds\Block\Adminhtml\System\Config\Support</frontend_model>
+                </field>
+            </group>
+
+            <group id="general" translate="label" type="text" sortOrder="10"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable Pixel</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Loads the OpenAI measurement pixel on the storefront.</comment>
+                </field>
+                <field id="pixel_id" translate="label comment" type="text" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Pixel ID</label>
+                    <comment><![CDATA[Ads Manager &rarr; Conversions &rarr; Pixels. Example: GBfM3N2Pz7YptF2TT77z3F]]></comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+                <field id="debug" translate="label comment" type="select" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Debug Mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Logs SDK activity to the browser console and server calls to var/log/debug.log. Turn off in production.</comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+            </group>
+
+            <group id="events" translate="label comment" type="text" sortOrder="20"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Events</label>
+                <comment>Which of the OpenAI standard events the store sends.</comment>
+                <field id="page_viewed" translate="label comment" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>page_viewed</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Every storefront page.</comment>
+                </field>
+                <field id="contents_viewed" translate="label comment" type="select" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>contents_viewed</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Product detail page.</comment>
+                </field>
+                <field id="items_added" translate="label comment" type="select" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>items_added</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Add to cart.</comment>
+                </field>
+                <field id="checkout_started" translate="label comment" type="select" sortOrder="40"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>checkout_started</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Checkout page, once per cart.</comment>
+                </field>
+                <field id="order_created" translate="label comment" type="select" sortOrder="50"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>order_created</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Purchase. Fired once per order, on the success page.</comment>
+                </field>
+                <field id="registration_completed" translate="label" type="select" sortOrder="60"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>registration_completed</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="lead_created" translate="label comment" type="select" sortOrder="70"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>lead_created</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Newsletter subscription.</comment>
+                </field>
+                <field id="search" translate="label comment" type="select" sortOrder="80"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>search</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Catalog search results page. Sent as a custom event named "search".]]></comment>
+                </field>
+            </group>
+
+            <group id="matching" translate="label comment" type="text" sortOrder="30"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Advanced Matching</label>
+                <comment>Customer data is SHA-256 hashed in PHP before it reaches the browser or the API. Raw values are never sent.</comment>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable Advanced Matching</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Sends hashed e-mail, phone and name so conversions can be attributed to the click that produced them.</comment>
+                </field>
+                <field id="external_id" translate="label comment" type="select" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Send External ID</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Stable per-visitor identifier: customer ID when logged in, otherwise a first-party cookie.</comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+                <field id="address" translate="label comment" type="select" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Send City / Region / Postal Code / Country</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Taken from the billing address. Sent unhashed, as the API requires.</comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+            </group>
+
+            <group id="capi" translate="label comment" type="text" sortOrder="40"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Conversions API (server-side)</label>
+                <comment>Sends the same events from the server. Deduplicated against the browser pixel by event ID.</comment>
+                <field id="enabled" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable Conversions API</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="api_key" translate="label comment" type="obscure" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>API Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <comment><![CDATA[Ads Manager &rarr; Conversions &rarr; Manage conversion keys.]]></comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+                <field id="events" translate="label comment" type="multiselect" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Server-side Events</label>
+                    <source_model>Degriz\OpenAiAds\Model\Config\Source\Events</source_model>
+                    <comment>Only these events are mirrored to the API. Mirroring page_viewed adds an HTTP call to every page load.</comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+                <field id="timeout" translate="label comment" type="text" sortOrder="40"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Timeout (seconds)</label>
+                    <validate>validate-digits</validate>
+                    <comment>How long a request may block the page. Default 5.</comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+                <field id="validate_only" translate="label comment" type="select" sortOrder="50"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Validate Only (dry run)</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Events are validated by OpenAI but not recorded. Use while testing.</comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+            </group>
+
+            <group id="consent" translate="label comment" type="text" sortOrder="50"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Cookie Consent</label>
+                <comment>Keeps the pixel off until the visitor accepts marketing cookies. Works with any banner that sets a cookie.</comment>
+                <field id="enabled" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Require Consent</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="cookie_name" translate="label comment" type="text" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Consent Cookie Name</label>
+                    <comment>Magento's own cookie restriction mode uses user_allowed_save_cookie. Cookiebot uses CookieConsent.</comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+                <field id="cookie_value" translate="label comment" type="text" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Consent Cookie Value</label>
+                    <comment>The pixel loads when the cookie contains this string. Leave empty to accept any non-empty value.</comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

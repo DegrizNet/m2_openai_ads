@@ -1,0 +1,151 @@
+<?php
+/**
+ * OpenAI Ads measurement pixel.
+ *
+ * The command queue is created immediately so nothing is lost, then the events
+ * and the hashed customer data are fetched from the store. The SDK is only
+ * injected once marketing consent is in place; whatever was queued before that
+ * is flushed as soon as it loads, or dropped if consent never comes.
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Degriz\OpenAiAds\ViewModel\Pixel $viewModel
+ */
+$viewModel = $block->getData('view_model');
+
+if (!$viewModel || !$viewModel->isEnabled()) {
+    return;
+}
+
+$pageType = (string) $block->getData('page_type');
+?>
+<script>
+(function (w, d) {
+    if (w.__oaiqBootstrapped) { return; }
+    w.__oaiqBootstrapped = true;
+
+    var config  = <?= /* @noEscape */ $viewModel->getConfigJson() ?>,
+        context = <?= /* @noEscape */ $viewModel->getContextJson($pageType) ?>;
+
+    context.title = d.title;
+
+    if (!w.oaiq) {
+        var q = function () { q.q.push(arguments); };
+        q.q = [];
+        w.oaiq = q;
+    }
+
+    function consentGranted() {
+        var consent = config.consent;
+
+        if (!consent.required || !consent.cookie) { return true; }
+
+        var name  = consent.cookie.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+            match = d.cookie.match(new RegExp('(^|;\\s*)' + name + '=([^;]*)'));
+
+        if (!match) { return false; }
+
+        var value = decodeURIComponent(match[2]);
+
+        return consent.value ? value.indexOf(consent.value) !== -1 : value !== '';
+    }
+
+    function loadSdk() {
+        if (w.__oaiqLoaded) { return; }
+        w.__oaiqLoaded = true;
+
+        var js = d.createElement('script');
+        js.async = true;
+        js.src = 'https://bzrcdn.openai.com/sdk/oaiq.min.js';
+
+        var first = d.getElementsByTagName('script')[0];
+        first.parentNode.insertBefore(js, first);
+    }
+
+    function whenConsented(callback) {
+        if (consentGranted()) {
+            callback();
+            return;
+        }
+
+        // Wait for the cookie banner. Any banner will do, we only watch the cookie.
+        var tries = 0,
+            timer = w.setInterval(function () {
+                if (consentGranted()) {
+                    w.clearInterval(timer);
+                    callback();
+                } else if (++tries > 600) {
+                    w.clearInterval(timer);
+                }
+            }, 500);
+    }
+
+    function init(user) {
+        var options = { pixelId: config.pixelId };
+
+        if (config.debug) { options.debug = true; }
+        if (user) { options.user = user; }
+
+        w.oaiq('init', options);
+    }
+
+    function measure(events) {
+        for (var i = 0; i < events.length; i++) {
+            w.oaiq('measure', events[i].name, events[i].data, events[i].options);
+        }
+    }
+
+    function query() {
+        var parts = [];
+
+        for (var key in context) {
+            if (Object.prototype.hasOwnProperty.call(context, key) && context[key] !== '') {
+                parts.push(encodeURIComponent(key) + '=' + encodeURIComponent(context[key]));
+            }
+        }
+
+        return parts.join('&');
+    }
+
+    function start() {
+        var request = new XMLHttpRequest(),
+            url     = config.url + (config.url.indexOf('?') === -1 ? '?' : '&') + query();
+
+        request.open('GET', url, true);
+        request.withCredentials = true;
+
+        request.onreadystatechange = function () {
+            if (request.readyState !== 4) { return; }
+
+            var payload = null;
+
+            if (request.status >= 200 && request.status < 300) {
+                try {
+                    payload = JSON.parse(request.responseText);
+                } catch (e) {
+                    payload = null;
+                }
+            }
+
+            if (payload) {
+                init(payload.user);
+                measure(payload.events || []);
+            } else {
+                // Never leave a visitor untracked because one request failed.
+                if (config.debug && w.console) { w.console.warn('oaiq: event request failed'); }
+                init(null);
+            }
+
+            loadSdk();
+        };
+
+        try {
+            request.send();
+        } catch (e) {
+            init(null);
+            loadSdk();
+        }
+    }
+
+    whenConsented(start);
+})(window, document);
+</script>

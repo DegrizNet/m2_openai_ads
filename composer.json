@@ -1,0 +1,30 @@
+{
+    "name": "degriz/module-openai-ads",
+    "description": "OpenAI Ads (ChatGPT) measurement pixel and Conversions API for Magento 2",
+    "type": "magento2-module",
+    "license": "MIT",
+    "homepage": "https://www.degriz.net/",
+    "authors": [
+        {
+            "name": "Anze Voh",
+            "homepage": "https://www.degriz.net/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "~8.1.0||~8.2.0||~8.3.0||~8.4.0",
+        "magento/framework": "*",
+        "magento/module-catalog": "*",
+        "magento/module-checkout": "*",
+        "magento/module-sales": "*",
+        "magento/module-newsletter": "*",
+        "magento/module-customer": "*",
+        "magento/module-store": "*"
+    },
+    "autoload": {
+        "files": ["registration.php"],
+        "psr-4": {
+            "Degriz\OpenAiAds\\": ""
+        }
+    }
+}

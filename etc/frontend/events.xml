@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="controller_action_predispatch">
+        <observer name="degriz_openaiads_capture" instance="Degriz\OpenAiAds\Observer\CaptureAttribution"/>
+    </event>
+    <event name="checkout_cart_product_add_after">
+        <observer name="degriz_openaiads_items_added" instance="Degriz\OpenAiAds\Observer\ItemsAdded"/>
+    </event>
+    <event name="sales_order_place_after">
+        <observer name="degriz_openaiads_order_created" instance="Degriz\OpenAiAds\Observer\OrderCreated"/>
+    </event>
+    <event name="customer_register_success">
+        <observer name="degriz_openaiads_registration" instance="Degriz\OpenAiAds\Observer\RegistrationCompleted"/>
+    </event>
+    <event name="newsletter_subscriber_save_after">
+        <observer name="degriz_openaiads_lead" instance="Degriz\OpenAiAds\Observer\LeadCreated"/>
+    </event>
+</config>

@@ -17,8 +17,9 @@ if (!$viewModel || !$viewModel->isEnabled()) {
 }
 
 $pageType = (string) $block->getData('page_type');
+$nonce = $viewModel->getCspNonce();
 ?>
-<script>
+<script<?= $nonce ? ' nonce="' . $block->escapeHtmlAttr($nonce) . '"' : '' ?>>
 (function (w, d) {
     if (w.__oaiqBootstrapped) { return; }
     w.__oaiqBootstrapped = true;

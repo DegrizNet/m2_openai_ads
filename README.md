@@ -41,7 +41,12 @@ Free and open source. No paid edition, no license key.
   SDK is only injected once your consent cookie is set — events fired before
   consent are buffered and flushed afterwards, or dropped if consent never
   comes. Works with Magento's cookie restriction mode or any third-party banner.
-- **CSP whitelisted** out of the box (`etc/csp_whitelist.xml`).
+- **CSP whitelisted** out of the box (`etc/csp_whitelist.xml`), and the inline
+  snippet carries a CSP nonce where the store provides one, so it survives a
+  strict policy.
+- **Works with Hyvä.** No RequireJS, no Knockout, no jQuery - the snippet is
+  plain JavaScript in the standard `head.additional` container, which Hyvä
+  keeps. Nothing to port, no Alpine component needed.
 - **Attribution kept server-side.** The `oppref` reference from the ad click is
   stored in a first-party cookie and attached to server-side events.
 - **Dry run mode** (`validate_only`) so you can verify the integration without

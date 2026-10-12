@@ -24,7 +24,7 @@
     "autoload": {
         "files": ["registration.php"],
         "psr-4": {
-            "Degriz\OpenAiAds\\": ""
+            "Degriz\\OpenAiAds\\": ""
         }
     }
 }

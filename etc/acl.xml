@@ -4,9 +4,13 @@
     <acl>
         <resources>
             <resource id="Magento_Backend::admin">
-                <resource id="Magento_Config::config">
+                <resource id="Magento_Backend::stores">
+                <resource id="Magento_Backend::stores_settings">
+                    <resource id="Magento_Config::config">
                     <resource id="Degriz_OpenAiAds::config" title="OpenAI Ads Pixel" sortOrder="100"/>
                 </resource>
+                </resource>
+            </resource>
             </resource>
         </resources>
     </acl>
